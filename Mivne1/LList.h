@@ -20,13 +20,4 @@ public:
     LListNode<T>* Previous;
 };
 
-template<typename T>
-class LList {
-    LListNode<T>* Head;
-    LListNode<T>* Tail;
-public:
-    LListNode<T>* Head;
-    LListNode<T>* Tail;
-    
-};
 #endif

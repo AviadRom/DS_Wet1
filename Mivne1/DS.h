@@ -88,11 +88,12 @@ public:
         if (!studentNode || !courseNode || courseNode->_Data.IsEnrolled(&StudentID)){
             return FAILURE;
         }
+//TODO check if student is pending for course
         try{
             if (courseNode->_Data.Enroll(&StudentID)){
                 studentNode->_Data.AddCourseTaken(&CourseID);
             }else {
-                studentNode->_Data.AddCoursePending(&CourseID);
+                studentNode->_Data.AddCoursePending(&CourseID,courseNode->_Data.GetQueueTail());
             }
         } catch (bad_alloc& BadAlloc){
             studentNode->_Data.removeCourse(&CourseID);
@@ -102,7 +103,19 @@ public:
         return SUCCESS;
     }
     
-    StatusType LeaveCourse(int StudentId,int CourseID){
+    StatusType LeaveCourse(int StudentID,int CourseID){
+        Student student(StudentID);
+        AVLNode<Student>* studentNode = Students.Find(&student);
+        Course course (CourseID,0);
+        AVLNode<Course>* courseNode = Courses.Find(&course);
+        if (studentNode == NULL || courseNode == NULL){
+            return FAILURE;
+        }
+        try {
+            courseNode->_Data.Leave(&StudentID);
+        } catch (bad_alloc& BadAlloc){
+            return ALLOCATION_ERROR;
+        }
         return SUCCESS;
     }
     

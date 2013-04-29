@@ -28,7 +28,7 @@ public:
     
     ~AVLNode(){}
     
-    const bool operator<(AVLNode<T>& Comperator) const{
+    const bool operator<(AVLNode<T>& Comperator) {
         return (_Data < Comperator._Data);
     }
 };

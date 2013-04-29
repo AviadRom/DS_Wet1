@@ -33,6 +33,7 @@
 		CF9BB5F717210F7600580076 /* Mivne1.1 */ = {isa = PBXFileReference; lastKnownFileType = text.man; path = Mivne1.1; sourceTree = "<group>"; };
 		CF9BB5FF17210F8A00580076 /* AVLTree.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AVLTree.h; sourceTree = "<group>"; };
 		CFA4D9E7172EED1500D58A1F /* LList.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LList.h; sourceTree = "<group>"; };
+		CFA4D9E8172F1A8E00D58A1F /* PendCourse.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PendCourse.h; sourceTree = "<group>"; };
 		CFBBA007172A6E4600128E43 /* AVLNode.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AVLNode.h; sourceTree = "<group>"; };
 		CFF242E51721538800CF4D2B /* exceptions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = exceptions.h; sourceTree = "<group>"; };
 		CFF242E617217D7A00CF4D2B /* library1.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = library1.h; sourceTree = "<group>"; };
@@ -77,6 +78,7 @@
 				CFF242E51721538800CF4D2B /* exceptions.h */,
 				CFBBA007172A6E4600128E43 /* AVLNode.h */,
 				CF9BB5F717210F7600580076 /* Mivne1.1 */,
+				CFA4D9E8172F1A8E00D58A1F /* PendCourse.h */,
 				CF807BB61724FD4D0073CC01 /* DS.h */,
 				CF6AAD2A172BA50C00C174DF /* AVLTests.h */,
 				CF807BB51724FB160073CC01 /* Student.h */,

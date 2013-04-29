@@ -10,11 +10,12 @@
 #define Mivne1_Student_h
 #include "AVLTree.h"
 #include "LList.h"
+#include "PendCourse.h"
 
 class Student {
     int _ID;
     AVLTree<int> _CoursesTaken;
-    AVLTree<int> _CoursesPending;
+    AVLTree<PendCourse> _CoursesPending;
     int _NumberOfCoursesTaken;
 public:
     Student():_ID(-1),_NumberOfCoursesTaken(0){}
@@ -29,9 +30,10 @@ public:
     
     const bool AddCourseTaken(int* CourseID){
         if (CourseID){
+            PendCourse pend(*CourseID,NULL);
             _CoursesTaken.Insert(CourseID);
-            if (_CoursesPending.IsIn(CourseID)){
-                _CoursesPending.Remove(CourseID);
+            if (_CoursesPending.IsIn(&pend)){
+                _CoursesPending.Remove(&pend);
             }
             _NumberOfCoursesTaken++;
             return true;
@@ -39,10 +41,13 @@ public:
         return false;
     }
     
-    const bool AddCoursePending (int* CourseID){
-        if (CourseID && !_CoursesTaken.IsIn(CourseID)){
-            _CoursesPending.Insert(CourseID);
-            return true;
+    const bool AddCoursePending (int* CourseID, LListNode<int>* QueueLocation){
+        if (CourseID && QueueLocation != NULL){
+            PendCourse pend(*CourseID,QueueLocation);
+            if (!_CoursesTaken.IsIn(CourseID)){
+                _CoursesPending.Insert(&pend);
+                return true;
+            }
         }
         return false;
     }
@@ -53,7 +58,8 @@ public:
                 _CoursesTaken.Remove(CourseID);
                 _NumberOfCoursesTaken--;
             }
-            _CoursesPending.Remove(CourseID);
+            PendCourse pendRemoval(*CourseID,NULL);
+            _CoursesPending.Remove(&pendRemoval);
             return true;
         }
         return false;
@@ -74,25 +80,6 @@ public:
     
     const int GetNumberOfCoursesTaken() const{
         return _NumberOfCoursesTaken;
-    }
-};
-
-class PendCourse {
-    int _CourseID;
-    LListNode* _QueueNode;
-public:
-    PendCourse(int courseID=0,LListNode<<#typename T#>>* node=NULL):_CourseID(courseID),_QueueNode(node){}
-    
-    const bool operator<(&PendCourse comperator){
-        return (_CourseID < comperator._CourseID);
-    }
-    
-    const bool operator>(&PendCourse comperator){
-        return (_CourseID > comperator._CourseID);
-    }
-    
-    const bool operator==(&PendCourse comperator){
-        return (_CourseID == comperator._CourseID);
     }
 };
 

@@ -32,11 +32,24 @@ class Course{
     int _AvailableSeats;
     int _NumOfPending;
     AVLTree<int> _EnrolledStudents; //switched to int-doesn't need any extra info in here.
-    LListNode<int>* _PendingHead;
-    LListNode<int>* _PendingTail;
+    LListNode<int>* _PendingHead; //where we pull students from
+    LListNode<int>* _PendingTail; //where we push students to
+    
+    void AddToPend (int studentID){ //only use this to
+        LListNode<int>* node = new LListNode<int>(studentID);
+        if (_PendingTail == NULL && _PendingHead == NULL){
+            _PendingHead = node;
+            _PendingTail = node;
+        }else {
+            _PendingTail->Previous = node;
+            node->Next = _PendingTail;
+            _PendingTail = node;
+        }
+    }
 public:
     Course(): _ID(-1), _Size(0){}
-    Course(int Id,int Size):_ID(Id),_Size(Size),_AvailableSeats(Size),_NumOfPending(0){}
+    Course(int Id,int Size):_ID(Id),_Size(Size),_AvailableSeats(Size),_NumOfPending(0), _PendingHead(NULL),
+                            _PendingTail(NULL){}
     ~Course(){}
     
     int GetID(){
@@ -56,34 +69,28 @@ public:
 
     const bool Enroll(int* StudentID){
         if (StudentID){
-            Student student(*StudentID);
+  //          Student student(*StudentID);
             if (_AvailableSeats){
-                _EnrolledStudents.Insert(&student);
+                _EnrolledStudents.Insert(StudentID);
                 _AvailableSeats--;
                 return true;
             }
-            PendingStudent pend(*StudentID,_NumOfPending+1);
-            _PendingStudents.Insert(&pend);
+            AddToPend(*StudentID);
         }
         return false;
     }
     
-    const bool Leave(int* StudentID){ //Refactored from "Drop"
+    const bool Leave(int* StudentID){ //Removal from pending list is done via DS, by the student object.
         if (!StudentID){
             return false;
         }
-        Student student(*StudentID);
-        PendingStudent pend(*StudentID);
-        if (_EnrolledStudents.IsIn(&student)){
-            _EnrolledStudents.Remove(&student);
-            if (!_PendingStudents.IsEmpty()){
-                _PendingStudents.Remove(<#PendingStudent *Data#>)
+        if (_EnrolledStudents.IsIn(StudentID)){
+            _EnrolledStudents.Remove(StudentID);
+            if (_PendingTail){
+                _EnrolledStudents.Insert(&(_PendingTail->Data));
             } else {
                 _AvailableSeats++;
             }
-
-        }else {
-            _PendingStudents.Remove(&student);
 
         }
         return true;
@@ -92,11 +99,11 @@ public:
     //used to check if student is either on course enrolled tree or pending tree.
     const bool IsEnrolled(int* StudentID) {
         Student student(*StudentID);
-        if (_EnrolledStudents.IsIn(&student) || _PendingStudents.IsIn(&student)){
+        if (_EnrolledStudents.IsIn(StudentID)){ // || _PendingStudents.IsIn(&student)){
             return true;
         }
             return false;
-    }
+    } // Maybe not relevant anymore
     
     const bool operator<(Course& Comperator) const{
         return (_ID < Comperator.GetID());
@@ -108,6 +115,10 @@ public:
     
     const bool operator==(Course& Comperator) const{
         return (_ID == Comperator.GetID());
+    }
+
+    LListNode<int>* GetQueueTail(){
+        return _PendingTail;
     }
     
 };
