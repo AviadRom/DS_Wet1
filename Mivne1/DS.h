@@ -20,6 +20,7 @@ class DS{
     int _NumberOfCourses;
     AVLTree<Student> Students;
     
+    //NOTE THAT I CHANGED "unsignStudent" TO THIS NAME.MUCH MORE READABLE.
     void DropAllStudentsFromCourse(int courseID,AVLNode<Student>* root){ //Refactored the name
                                                                       //to improve readability
        	if (root == NULL){
@@ -33,6 +34,13 @@ class DS{
 public:
     DS():_NumberOfCourses(0){}
     
+    
+    bool IsCourseExists(int CourseId){
+    	Course course(CourseId,0);
+    	return Courses.IsIn(&course);
+    }
+
+    
     StatusType AddCourse(int CourseID, int Size){
         if (Size < 0){
             return INVALID_INPUT;
@@ -41,11 +49,17 @@ public:
     	if (Courses.IsIn(&course)){
     		return FAILURE;
     	}
-    	Courses.Insert(&course);
+        try{
+            Courses.Insert(&course);
+        } catch (bad_alloc& BadAlloc){
+            return ALLOCATION_ERROR;
+        }
     	return SUCCESS;
     }
 
     
+    //I DIDN'T PUT YOUR REWORK HERE BECAUSE IT SEEMS TO BE A WASTE OF TIME.
+    //TRY-CATCH BLOCKS ARE TIME&MEMORY CONSUMING AND SHOULD NOT HAVE THE WHOLD METHOD INSIDE THEM
     StatusType RemoveCourse(int CourseID){
         Course course(CourseID,0);
     	if (!Courses.IsIn(&course)){
@@ -53,7 +67,7 @@ public:
        	}
        	Courses.Remove(&course);
        	DropAllStudentsFromCourse(CourseID,Students.GetRoot());
-        
+        //TODO - if fails (bad_alloc) restore. -although i'm not sure it could even happen here
        	return SUCCESS;
     }
     
@@ -120,6 +134,16 @@ public:
     }
     
     StatusType EnlargeCourse(int CourseID,int ExtraSize){
+        Course course(CourseID,0);
+        if (ExtraSize < 0 || !Courses.IsIn(&course)){
+            return FAILURE;
+        }
+        AVLNode<Course>* courseNode = Courses.Find(&course);
+        try {
+            courseNode->_Data.IncreaseSize(ExtraSize);// TODO- finish IncreaseSize
+        } catch (bad_alloc& BadAlloc) {
+            return FAILURE;
+        }
         return SUCCESS;
     }
     

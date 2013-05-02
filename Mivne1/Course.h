@@ -62,6 +62,14 @@ public:
     
     void IncreaseSize(int Addition){
         _Size += Addition;
+        if (_NumOfPending == 0){
+            return;
+        }
+        for (int i=0; i<_NumOfPending; i++){
+            //TODO-write function PendingToEnrolled to move students from
+            // pending list to enrolled list and also update the students accordingly
+        }
+        
         //TODO- continue working on this.
         //if there are pending students they need to move from pending to enrolled
         // according to the new course size
