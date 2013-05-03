@@ -12,19 +12,6 @@
 #include "Student.h"
 #include "LList.h"
 
-class PendingStudent {
-    int _StudentID;
-    int _PendTiming;
-public:
-    PendingStudent(int ID,int Timing):_StudentID(ID),_PendTiming(Timing){}
-    const int GetId() const{
-        return _StudentID;
-    }
-    
-    const int GetPend() const{
-        return _PendTiming;
-    }
-};
 
 class Course{
     int _ID;
@@ -60,12 +47,22 @@ public:
         return _Size;
     }
     
-    void IncreaseSize(int Addition){
+    void IncreaseSize(int Addition, AVLTree<Student>* StudentsTree){
         _Size += Addition;
+        _AvailableSeats += Addition;
         if (_NumOfPending == 0){
             return;
         }
-        for (int i=0; i<_NumOfPending; i++){
+        LListNode<int>* pendRestoreHead = _PendingHead;
+        LListNode<int>* pendRestoreTail = pendRestoreHead;
+        for (int i=0; i<_NumOfPending && _AvailableSeats>0 ; i++){
+            Student student(_PendingHead->Data);
+            AVLNode<Student>* studentNode = StudentsTree->Find(&student);
+            studentNode->_Data.AddCourseTaken(&_PendingHead->Data);
+            Enroll(&_PendingHead->Data);
+            _PendingHead =_PendingHead->Previous;
+            _PendingHead->Next = NULL;
+            // figure out a way to restore w/o any allocations 
             //TODO-write function PendingToEnrolled to move students from
             // pending list to enrolled list and also update the students accordingly
         }

@@ -26,6 +26,10 @@ public:
     const bool operator==(PendCourse& comperator){
         return (_CourseID == comperator._CourseID);
     }
+    
+    const int GetID(){
+        return _CourseID;
+    }
 };
 
 

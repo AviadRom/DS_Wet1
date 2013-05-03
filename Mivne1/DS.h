@@ -140,9 +140,9 @@ public:
         }
         AVLNode<Course>* courseNode = Courses.Find(&course);
         try {
-            courseNode->_Data.IncreaseSize(ExtraSize);// TODO- finish IncreaseSize
+            courseNode->_Data.IncreaseSize(ExtraSize,&Students);// TODO- finish IncreaseSize
         } catch (bad_alloc& BadAlloc) {
-            return FAILURE;
+            return ALLOCATION_ERROR;
         }
         return SUCCESS;
     }
