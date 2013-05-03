@@ -148,6 +148,9 @@ public:
     LListNode<int>* GetQueueTail(){
         return _PendingTail;
     }
+    AVLNode<int>* GetEnrolledStudents(){
+        return _EnrolledStudents.GetRoot();
+    }
     
 };
 
