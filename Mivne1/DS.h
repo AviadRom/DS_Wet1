@@ -15,7 +15,7 @@
 #include <iostream>
 using namespace std;
 
-class DS{
+class Statistics{
     AVLTree<Course> Courses;
     int _NumberOfCourses;
     AVLTree<Student> Students;
@@ -31,7 +31,7 @@ class DS{
     }
 
 public:
-    DS():_NumberOfCourses(0){}
+    Statistics():_NumberOfCourses(0){}
     
     
     bool IsCourseExists(int CourseId){

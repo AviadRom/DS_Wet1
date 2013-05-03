@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		CF7105E61733DB63000C50BD /* library1.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CF7105E51733DB63000C50BD /* library1.cpp */; };
 		CF9BB5F617210F7600580076 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CF9BB5F517210F7600580076 /* main.cpp */; };
 		CF9BB5F817210F7600580076 /* Mivne1.1 in CopyFiles */ = {isa = PBXBuildFile; fileRef = CF9BB5F717210F7600580076 /* Mivne1.1 */; };
 /* End PBXBuildFile section */
@@ -26,6 +27,7 @@
 
 /* Begin PBXFileReference section */
 		CF6AAD2A172BA50C00C174DF /* AVLTests.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AVLTests.h; sourceTree = "<group>"; };
+		CF7105E51733DB63000C50BD /* library1.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = library1.cpp; sourceTree = "<group>"; };
 		CF807BB51724FB160073CC01 /* Student.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Student.h; sourceTree = "<group>"; };
 		CF807BB61724FD4D0073CC01 /* DS.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DS.h; sourceTree = "<group>"; };
 		CF9BB5F217210F7600580076 /* Mivne1 */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Mivne1; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -73,6 +75,7 @@
 				CF9BB5F517210F7600580076 /* main.cpp */,
 				CF9BB5FF17210F8A00580076 /* AVLTree.h */,
 				CFA4D9E7172EED1500D58A1F /* LList.h */,
+				CF7105E51733DB63000C50BD /* library1.cpp */,
 				CFF242E617217D7A00CF4D2B /* library1.h */,
 				CFFE1FBD1724838B00F55B14 /* Course.h */,
 				CFF242E51721538800CF4D2B /* exceptions.h */,
@@ -138,6 +141,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				CF9BB5F617210F7600580076 /* main.cpp in Sources */,
+				CF7105E61733DB63000C50BD /* library1.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
