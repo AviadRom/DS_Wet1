@@ -29,6 +29,40 @@ class Statistics{
        	root->_Data.removeCourse(&courseID);
        	DropAllStudentsFromCourse(courseID,root->_Right);
     }
+    void GetMaxCourseSize(AVLNode<Course>* root,int* maxSize,int* amountOfCourses){
+           if (root == NULL){
+       		return;
+       	}
+       	GetMaxCourseSize(root->_Left,maxSize,amountOfCourses);
+       	(*amountOfCourses)++;
+       	if (root->_Data.GetSize() > *maxSize){
+       		*maxSize=root->_Data.GetSize();
+       	}
+       	GetMaxCourseSize(root->_Right,maxSize,amountOfCourses);
+    }
+
+    void GetSubscribedStudents(AVLNode<int>* root,int*** courses,int maxSize,int numOfCourses,int** coursesSize){
+   		if (root == NULL){
+   			return;
+   		}
+   		GetSubscribedStudents(root->_Left,courses,maxSize,numOfCourses,coursesSize);
+   		int currentStudent=++(*coursesSize)[numOfCourses];
+   		*(courses[numOfCourses][currentStudent])=root->_Data;
+   		GetSubscribedStudents(root->_Right,courses,maxSize,numOfCourses,coursesSize);
+   	}
+    void VisitAllCourses(AVLNode<Course>* root,int ***courses, int**coursesSize, int *numOfCourses,int maxSize){
+       	if (root==NULL){
+       		return;
+       	}
+       	VisitAllCourses(root->_Left,courses,coursesSize,numOfCourses,maxSize);
+      	(*numOfCourses)++;
+       	(*courses)[*numOfCourses]=(int*)malloc(maxSize*sizeof(int));
+       	for (int i=0;i<maxSize;i++){
+       		courses[*numOfCourses][i]=NULL;
+       	}
+       	GetSubscribedStudents(root->_Data.GetEnrolledStudents(),courses,maxSize,*numOfCourses,coursesSize);
+       	VisitAllCourses(root->_Right,courses,coursesSize,numOfCourses,maxSize);
+    }
 
 public:
     Statistics():_NumberOfCourses(0){}
@@ -147,8 +181,23 @@ public:
     }
     
     StatusType GetAllCourses(int ***courses, int**coursesSize, int *numOfCourses){
-        return SUCCESS;
-    }
+            if (courses==NULL || coursesSize==NULL || numOfCourses==NULL  ){
+                return INVALID_INPUT;
+            }
+
+            int maxSize=0;
+            int amountOfCourses=0;
+            GetMaxCourseSize(Courses.GetRoot(),&maxSize,&amountOfCourses);
+            numOfCourses=(int*)malloc(sizeof(int));
+            if (numOfCourses == NULL){
+            	return ALLOCATION_ERROR;
+            }
+            *numOfCourses=-1;
+            coursesSize=(int**)malloc(amountOfCourses*sizeof(int));
+
+            VisitAllCourses(Courses.GetRoot(),courses,coursesSize,numOfCourses,maxSize);
+        	return SUCCESS;
+        }
 
 };
 
