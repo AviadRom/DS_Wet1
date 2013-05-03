@@ -33,6 +33,21 @@ class Course{
             _PendingTail = node;
         }
     }
+    
+    void RestoreLastState(int& numOfNewlyEnrolled, LListNode<int>* tmpHead, bool needToUpdateCurrent,
+                                AVLTree<Student>* StudentsTree){
+        if (!needToUpdateCurrent){
+            tmpHead = tmpHead->Previous;
+        }
+        for (; numOfNewlyEnrolled > 0; numOfNewlyEnrolled--){
+            Student studentRestore(tmpHead->Data);
+            AVLNode<Student>* restoreNode = StudentsTree->Find(&studentRestore);
+            restoreNode->_Data.removeCourse(&_ID);
+            restoreNode->_Data.AddCoursePending(&_ID, tmpHead);
+            tmpHead = tmpHead->Previous;
+        }
+
+    }
 public:
     Course(): _ID(-1), _Size(0){}
     Course(int Id,int Size):_ID(Id),_Size(Size),_AvailableSeats(Size),_NumOfPending(0), _PendingHead(NULL),
@@ -62,43 +77,27 @@ public:
                 studentNode->_Data.AddCourseTaken(&tmpHead->Data);
             } catch (bad_alloc& BadAlloc){
                 if (numOfNewlyEnrolled){
-                    tmpHead = tmpHead->Previous;
-                    for (; numOfNewlyEnrolled > 0; numOfNewlyEnrolled--){
-                        Student studentRestore(tmpHead->Data);
-                        AVLNode<Student>* restoreNode = StudentsTree->Find(&studentRestore);
-                        restoreNode->_Data.removeCourse(&_ID);
-                        restoreNode->_Data.AddCoursePending(&_ID, tmpHead);
-                        tmpHead = tmpHead->Previous;
-                    }
+                    RestoreLastState(numOfNewlyEnrolled, tmpHead, false, StudentsTree);
                     throw bad_alloc();
                 }
             }
             try {
                 Enroll(&_PendingHead->Data);
             } catch (bad_alloc& BadAlloc){
-                if (numOfNewlyEnrolled){
-                    for (; numOfNewlyEnrolled > 0; numOfNewlyEnrolled--){
-                        Student studentRestore(tmpHead->Data);
-                        AVLNode<Student>* restoreNode = StudentsTree->Find(&studentRestore);
-                        restoreNode->_Data.removeCourse(&_ID);
-                        restoreNode->_Data.AddCoursePending(&_ID, tmpHead);
-                        tmpHead = tmpHead->Previous;
-                    }
-                    throw bad_alloc();
-                }
-
+                RestoreLastState(numOfNewlyEnrolled, tmpHead, true, StudentsTree);
+                throw bad_alloc();
             }
             tmpHead = tmpHead->Next;
         }
-        
-        //TODO- continue working on this.
-        //if there are pending students they need to move from pending to enrolled
-        // according to the new course size
+        while (_PendingHead->Data != tmpHead->Data) {
+            _PendingHead = _PendingHead->Next;
+            delete _PendingHead->Previous;
+            _PendingHead->Previous = NULL;
+        }
     }
 
     const bool Enroll(int* StudentID){
         if (StudentID){
-  //          Student student(*StudentID);
             if (_AvailableSeats){
                 _EnrolledStudents.Insert(StudentID);
                 _AvailableSeats--;
