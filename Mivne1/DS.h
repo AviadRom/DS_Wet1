@@ -13,6 +13,7 @@
 #include "Student.h"
 #include "Course.h"
 #include <iostream>
+#include <stdlib.h>
 using namespace std;
 
 class Statistics{
