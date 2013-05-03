@@ -21,8 +21,7 @@ class DS{
     AVLTree<Student> Students;
     
     //NOTE THAT I CHANGED "unsignStudent" TO THIS NAME.MUCH MORE READABLE.
-    void DropAllStudentsFromCourse(int courseID,AVLNode<Student>* root){ //Refactored the name
-                                                                      //to improve readability
+    void DropAllStudentsFromCourse(int courseID,AVLNode<Student>* root){ 
        	if (root == NULL){
        		return;
        	}
@@ -147,7 +146,7 @@ public:
         return SUCCESS;
     }
     
-    StatusType GetAllCourses(void *DS, int ***courses, int**coursesSize, int *numOfCourses){
+    StatusType GetAllCourses(int ***courses, int**coursesSize, int *numOfCourses){
         return SUCCESS;
     }
 

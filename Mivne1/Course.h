@@ -53,18 +53,42 @@ public:
         if (_NumOfPending == 0){
             return;
         }
-        LListNode<int>* pendRestoreHead = _PendingHead;
-        LListNode<int>* pendRestoreTail = pendRestoreHead;
-        for (int i=0; i<_NumOfPending && _AvailableSeats>0 ; i++){
-            Student student(_PendingHead->Data);
+        int numOfNewlyEnrolled = 0;
+        LListNode<int>* tmpHead = _PendingHead;
+        for (int i=0; i<_NumOfPending && _AvailableSeats>0 ; i++, numOfNewlyEnrolled++){
+            Student student(tmpHead->Data);
             AVLNode<Student>* studentNode = StudentsTree->Find(&student);
-            studentNode->_Data.AddCourseTaken(&_PendingHead->Data);
-            Enroll(&_PendingHead->Data);
-            _PendingHead =_PendingHead->Previous;
-            _PendingHead->Next = NULL;
-            // figure out a way to restore w/o any allocations 
-            //TODO-write function PendingToEnrolled to move students from
-            // pending list to enrolled list and also update the students accordingly
+            try{
+                studentNode->_Data.AddCourseTaken(&tmpHead->Data);
+            } catch (bad_alloc& BadAlloc){
+                if (numOfNewlyEnrolled){
+                    tmpHead = tmpHead->Previous;
+                    for (; numOfNewlyEnrolled > 0; numOfNewlyEnrolled--){
+                        Student studentRestore(tmpHead->Data);
+                        AVLNode<Student>* restoreNode = StudentsTree->Find(&studentRestore);
+                        restoreNode->_Data.removeCourse(&_ID);
+                        restoreNode->_Data.AddCoursePending(&_ID, tmpHead);
+                        tmpHead = tmpHead->Previous;
+                    }
+                    throw bad_alloc();
+                }
+            }
+            try {
+                Enroll(&_PendingHead->Data);
+            } catch (bad_alloc& BadAlloc){
+                if (numOfNewlyEnrolled){
+                    for (; numOfNewlyEnrolled > 0; numOfNewlyEnrolled--){
+                        Student studentRestore(tmpHead->Data);
+                        AVLNode<Student>* restoreNode = StudentsTree->Find(&studentRestore);
+                        restoreNode->_Data.removeCourse(&_ID);
+                        restoreNode->_Data.AddCoursePending(&_ID, tmpHead);
+                        tmpHead = tmpHead->Previous;
+                    }
+                    throw bad_alloc();
+                }
+
+            }
+            tmpHead = tmpHead->Next;
         }
         
         //TODO- continue working on this.
