@@ -24,10 +24,19 @@ public:
     
     ~Student(){}
     
+    /*GetID
+     * Description: Getter to _ID property of the student
+     */
     int GetID(){
         return _ID;
     }
     
+    /* AddCourseTaken
+     * Description: Adds a course ID to the _CoursesTaken tree.
+     * @param CourseID: pointer to course's ID element.
+     * @return: true if added successfully.
+     *          false if invalid pointer was provided.
+     */
     const bool AddCourseTaken(int* CourseID){
         if (CourseID){
             PendCourse pend(*CourseID,NULL);
@@ -81,11 +90,23 @@ public:
     const int GetNumberOfCoursesTaken() const{
         return _NumberOfCoursesTaken;
     }
-    bool IsCourseTaken(int courseId){
+    
+    /*IsCourseTaken
+     * Description: Returns a bool true/false according to wether a student is
+     *              on a course's enrolled list or not.
+     * @param CourseID: ID of the course to be checked.
+     */
+    const bool IsCourseTaken(int courseId){
         return _CoursesTaken.IsIn(&courseId);
     }
-    bool IsCoursePending(int courseId){
-        PendCourse course(courseId);
+    
+    /*IsCoursePending
+     * Description: Returns a bool true/false according to wether a student is
+     *              on a course's pending list or not.
+     * @param CourseID: ID of the course to check.
+     */
+    const bool IsCoursePending(int courseID){
+        PendCourse course(courseID);
     	return _CoursesPending.IsIn(&course);
     }
 };
