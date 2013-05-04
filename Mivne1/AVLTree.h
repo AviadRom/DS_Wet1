@@ -146,17 +146,9 @@ public:
     
     /* Insert
      * Description: Adds a node with provided data to the tree.
+     * @param Data: Data to insert to the tree within the new node.
      */
     void Insert(T* Data){
-        /*
-         * 1. find parent (if tree is empty add as root and return)
-         * 2. add new element under parent, new vertex's height=0
-         * 3. while the vertex is not the root:
-         **     1.is parent's height >= new vertex's height+1? yes-> return.
-         **     2.assign parent's height to be new vertex's+1.
-         **     3.is parent balanced? no-> roll and return.
-         **     4. point vertex at parent.
-         */
         if (Data == NULL){
             throw new NullPtrException;
         }
@@ -207,14 +199,11 @@ public:
         }
     }
     
+    /* Remove
+     * Description: Removes a node containing provided data from the tree.
+     * @param Data: Data to remove from tree (if exists in the tree)
+     */
     void Remove(T* Data){
-        /*
-         * 1. if pointer is null or data is not in the tree- return.
-         * 2. get a pointer to node where provided data is stored in the tree
-         * 3. remove node as if it were a regular binary search tree
-         * 4. update root heights and balance factors.
-         * 5. perform rotations if needed.
-         */
         if ((Data == NULL) || (!IsIn(Data))){
             return;
         }
