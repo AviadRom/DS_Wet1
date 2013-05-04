@@ -23,7 +23,7 @@ class Statistics{
     
     //NOTE THAT I CHANGED "unsignStudent" TO THIS NAME.MUCH MORE READABLE.
     void DropAllStudentsFromCourse(int courseID,AVLNode<Student>* root){ 
-       	if (root == NULL){
+           if (root == NULL){
        		return;
        	}
        	DropAllStudentsFromCourse(courseID, root->_Left);
@@ -51,18 +51,21 @@ class Statistics{
    		*(courses[numOfCourses][currentStudent])=root->_Data;
    		GetSubscribedStudents(root->_Right,courses,maxSize,numOfCourses,coursesSize);
    	}
-    void VisitAllCourses(AVLNode<Course>* root,int ***courses, int**coursesSize, int *numOfCourses,int maxSize){
+    void VisitAllCourses(AVLNode<Course>* root,int ***courses, int**coursesSize, int *numOfCourses,int maxSize,int* flag){
        	if (root==NULL){
        		return;
        	}
-       	VisitAllCourses(root->_Left,courses,coursesSize,numOfCourses,maxSize);
+       	VisitAllCourses(root->_Left,courses,coursesSize,numOfCourses,maxSize,flag);
       	(*numOfCourses)++;
        	(*courses)[*numOfCourses]=(int*)malloc(maxSize*sizeof(int));
+       	if ((*courses)[*numOfCourses] == NULL){
+       		*flag=1;
+     	}
        	for (int i=0;i<maxSize;i++){
        		courses[*numOfCourses][i]=NULL;
        	}
        	GetSubscribedStudents(root->_Data.GetEnrolledStudents(),courses,maxSize,*numOfCourses,coursesSize);
-       	VisitAllCourses(root->_Right,courses,coursesSize,numOfCourses,maxSize);
+       	VisitAllCourses(root->_Right,courses,coursesSize,numOfCourses,maxSize,flag);
     }
 
 public:
@@ -104,7 +107,7 @@ public:
         //TODO - if fails (bad_alloc) restore. -although i'm not sure it could even happen here
        	return SUCCESS;
     }
-    
+
     StatusType AddStudent(int StudentId){ //TODO Test
         Student student(StudentId);
         if (Students.IsIn(&student)){
@@ -180,12 +183,11 @@ public:
         }
         return SUCCESS;
     }
-    
-    StatusType GetAllCourses(int ***courses, int**coursesSize, int *numOfCourses){
+
+    StatusType GetAllCourses(int*** courses, int** coursesSize, int* numOfCourses){
             if (courses==NULL || coursesSize==NULL || numOfCourses==NULL  ){
                 return INVALID_INPUT;
             }
-
             int maxSize=0;
             int amountOfCourses=0;
             GetMaxCourseSize(Courses.GetRoot(),&maxSize,&amountOfCourses);
@@ -195,11 +197,26 @@ public:
             }
             *numOfCourses=-1;
             coursesSize=(int**)malloc(amountOfCourses*sizeof(int));
-
-            VisitAllCourses(Courses.GetRoot(),courses,coursesSize,numOfCourses,maxSize);
-        	return SUCCESS;
+            if (coursesSize == NULL){
+            	free(numOfCourses);
+            	return ALLOCATION_ERROR;
+            }
+            int flag=0;								//This flag states ALLOCATION ERROR in the function VisitAllCourses.
+            VisitAllCourses(Courses.GetRoot(),courses,coursesSize,numOfCourses,maxSize,&flag);
+        	if (flag){
+        		for (int j=0;j<*numOfCourses;j++){
+        			free((*courses)[j]);
+          		}
+        		free(numOfCourses);
+        		free(coursesSize);
+        		return ALLOCATION_ERROR;
+        	}
+            return SUCCESS;
         }
 
+    	AVLNode<Student>* GetStudentTreeRoot(){
+    		return Students.GetRoot();
+    	}
 };
 
 
