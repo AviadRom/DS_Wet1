@@ -50,8 +50,15 @@ public:
         return false;
     }
     
+    /*AddCoursePending
+     * Description: Adds a course to the student's pending courses tree.
+     * @param CourseID: Pointer to the ID of the course
+     * @param QueueLocation: Pointer to the location in the course's pending list.
+     * @return: true if successfully added.
+     *          false if either one of the pointers is invalid (NULL)
+     */
     const bool AddCoursePending (int* CourseID, LListNode<int>* QueueLocation){
-        if (CourseID && QueueLocation != NULL){
+        if (CourseID && QueueLocation){
             PendCourse pend(*CourseID,QueueLocation);
             if (!_CoursesTaken.IsIn(CourseID)){
                 _CoursesPending.Insert(&pend);
@@ -61,7 +68,13 @@ public:
         return false;
     }
     
-    const bool removeCourse(int* CourseID){
+    /*RemoveCourse
+     * Description: Removes a course from the student's lists of courses
+     * @param CourseID: pointer to the course's ID element.
+     * @return: true if successfully removed course from student's lists.
+     *          false if pointer was invalid.
+     */
+    const bool RemoveCourse(int* CourseID){
         if (CourseID){
             if (_CoursesTaken.IsIn(CourseID)){
                 _CoursesTaken.Remove(CourseID);
