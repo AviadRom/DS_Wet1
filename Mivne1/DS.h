@@ -212,24 +212,24 @@ public:
             	//free(numOfCourses);
             	return ALLOCATION_ERROR;
             }
-            for (int i = 0; i < amountOfCourses; i++){
+            /*for (int i = 0; i < amountOfCourses; i++){
             	coursesSize[i] = (int*)malloc(sizeof(int));
             	if (coursesSize[i] == NULL){
             		for (int j = 0; j < i; j++){
-            			free (coursesSize[i]);
+            			free (*coursesSize[i]);
             		}
             	//	free(numOfCourses);
-            		free (coursesSize);
+            		free (*coursesSize);
             		return ALLOCATION_ERROR;
             	}
             	*coursesSize[i] = 0;
 
-            }
-            int flag=0;								//This flag states ALLOCATION ERROR in the function VisitAllCourses.
+            }*/
+            bool visitAllCoursesAllocationErrorflag = flase;								//This flag states ALLOCATION ERROR in the function VisitAllCourses.
             *courses=(int**)malloc(amountOfCourses*sizeof(int*));
             if (courses == NULL){
-            	free(numOfCourses);
-            	free(coursesSize);
+            	//free(numOfCourses);
+            	free(*coursesSize);
             	return ALLOCATION_ERROR;
             }
             VisitAllCourses(Courses.GetRoot(),courses,coursesSize,numOfCourses,maxSize,&flag);
@@ -237,8 +237,8 @@ public:
         		for (int j=0;j<*numOfCourses;j++){
         			free((*courses)[j]);
           		}
-        		free(numOfCourses);
-        		free(coursesSize);
+        		//free(numOfCourses);
+        		free(*coursesSize);
         		return ALLOCATION_ERROR;
         	}
             return SUCCESS;
