@@ -221,7 +221,7 @@ public:
         AVLNode<T>* tmp = Find(Data);
         AVLNode<T>* parent = tmp->_Parent;
         AVLNode<T>* start=parent;
-        if (tmp->_Height == 0){								//a leaf
+        if (tmp->_Height == 0){    							//a leaf
             if (parent){
                 if ( parent->_Left->_Data == tmp->_Data){
                     delete tmp;
@@ -235,21 +235,34 @@ public:
                 Root = NULL;
             }
         } else if (tmp->_Left && tmp->_Right==NULL){	//only left son
-            if (parent->_Left == tmp){
-                parent->_Left = tmp->_Left;
-                delete tmp;
-            } else if (parent->_Right == tmp){
-                parent->_Right = tmp->_Left;
-                delete tmp;
+            if (parent){
+            	if (parent->_Left == tmp){
+            		parent->_Left = tmp->_Left;
+            		delete tmp;
+            	} else if (parent->_Right == tmp){
+            		parent->_Right = tmp->_Left;
+            		delete tmp;
+            	}
+            }
+            else{
+            	Root=tmp->_Left;
+            	delete tmp;
             }
         } else if (tmp->_Right && tmp->_Left==NULL){	//only right son
-            if (parent->_Left == tmp){
-                parent->_Left = tmp->_Right;
-                delete tmp;
-            } else if (parent->_Right == tmp){
-                parent->_Right = tmp->_Right;
-                delete tmp;
+            if (parent){
+            	if (parent->_Left == tmp){
+            		parent->_Left = tmp->_Right;
+            		delete tmp;
+            	} else if (parent->_Right == tmp){
+            		parent->_Right = tmp->_Right;
+            		delete tmp;
+            	}
             }
+            else{
+            	Root=tmp->_Right;
+            	delete tmp;
+            }
+
         } else {										//two sons
             AVLNode<T>* toSwap = SubTreeMin(tmp->_Right);		//find the preceding node
             AVLNode<T>* swapParent = toSwap->_Parent;
