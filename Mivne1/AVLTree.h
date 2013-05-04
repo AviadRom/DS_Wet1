@@ -350,7 +350,7 @@ public:
      * Description: Performs a right-right roll correction in order
      *              to maintain AVL qualities of the tree.
      * @param Node: Node that's out of AVL balance.
-     * @return: //TODO
+     * @return: Pointer to the node from which the tree balancing will continue.
      */
     AVLNode<T>* RightRight (AVLNode<T>* Node){
         AVLNode<T>* child = Node->_Right;
@@ -385,7 +385,7 @@ public:
      * Description: Performs a right-left roll correction in order
      *              to maintain AVL qualities of the tree.
      * @param Node: Node that's out of AVL balance.
-     * @return: //TODO
+     * @return: Pointer to the node from which the tree balancing will continue.
      */
     AVLNode<T>* RightLeft (AVLNode<T>* Node){
         AVLNode<T>* child = Node->_Right;
@@ -416,9 +416,9 @@ public:
      * Description: Performs a left-right roll correction in order
      *              to maintain AVL qualities of the tree.
      * @param Node: Node that's out of AVL balance.
-     * @return: //TODO
+     * @return: Pointer to the node from which the tree balancing will continue.
      */
-    AVLNode<T>* LeftRight (AVLNode<T>* Node){  //TODO REVIEW METHOD(probably needs the same fix as RL
+    AVLNode<T>* LeftRight (AVLNode<T>* Node){  
         AVLNode<T>* child = Node->_Left;
         AVLNode<T>* grandChild = child->_Right;
         AVLNode<T>* parent = Node->_Parent;
@@ -437,7 +437,6 @@ public:
             }
         } else Root = grandChild;
         UpdateHeights(Node, "Roll");
-        Node->_Parent=grandChild;
         UpdateHeights(child, "Roll");
         NodeBalanceUpdate(Node);
         NodeBalanceUpdate(child);
@@ -448,7 +447,7 @@ public:
      * Description: Performs a right-right roll correction in order
      *              to maintain AVL qualities of the tree.
      * @param Node: Node that's out of AVL balance.
-     * @return: //TODO
+     * @return: Pointer to the node from which the tree balancing will continue.
      */
     AVLNode<T>* LeftLeft (AVLNode<T>* Node){
         AVLNode<T>* child = Node->_Left;
