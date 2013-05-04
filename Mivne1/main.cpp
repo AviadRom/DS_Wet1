@@ -24,6 +24,8 @@ int main(int argc, const char * argv[])
     InsertionCombo2();
     LeftLeftRemove();
     RLRRRemoveCombo();
+    AddCourseTest();
+    RemoveCourseTest();
     return 0;
 }
 
