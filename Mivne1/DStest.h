@@ -10,9 +10,24 @@
 #include "DS.h"
 using namespace std;
 
+void isCourseTaken(int courseID,AVLNode<Student>* root){
+       	if (root == NULL){
+       		return;
+       	}
+       	isCourseTaken(courseID,root->_Left);							////This function was not checked!
+      	if (root->_Data.IsCourseTaken(courseID)){
+   		cout << "Test failed, a student still takes the removed course.";
+   		return;
+       	}
+      	if (root->_Data.IsCoursePending(courseID)){
+      		cout << "Test failed, a student still pends to the removed course.";
+       		return;
+       	}
+       	isCourseTaken(courseID,root->_Right);
+    }
 
 void AddCourseTest(){
-  DS tester;
+	Statistics tester;
 	int CourseID=56,Size=5;
 	StatusType result=tester.AddCourse(CourseID,-1);
 	if (result != INVALID_INPUT){
@@ -33,10 +48,16 @@ void AddCourseTest(){
 }
 
 void RemoveCourseTest(){
-	DS tester;
+	Statistics tester;
 	StatusType result=tester.AddCourse(1,50);
 	result=tester.AddCourse(2,50);
 	result=tester.AddCourse(3,55);
+	result=tester.AddStudent(74);
+	result=tester.AddStudent(47);
+	result=tester.AddStudent(54);
+	result=tester.TakeCourse(74,1);
+	result=tester.TakeCourse(74,2);
+	result=tester.TakeCourse(47,1);
 	result=tester.RemoveCourse(4);
 	if (result != FAILURE){
 		cout << "Test failed,we removed a course that didn't exist";
@@ -51,26 +72,12 @@ void RemoveCourseTest(){
 		cout << "Test failed, a wrong course was removed";
 		return;
 	}
-//	isCourseTaken(1,tester.Students.GetRoot());
-
+	isCourseTaken(1,tester.GetStudentTreeRoot());
+	cout << "RemoveCourseTest: Test Passed."<<endl;
 
 }
 
-void isCourseTaken(int courseID,AVLNode<Student>* root){
-       	if (root == NULL){
-       		return;
-       	}
-       	isCourseTaken(courseID,root->_Left);							////This function was not checked!
-      	if (root->_Data.IsCourseTaken(courseID)){
-   		cout << "Test failed, a student still takes the removed course.";
-   		return;
-       	}
-      	if (root->_Data.IsCoursePending(courseID)){
-      		cout << "Test failed, a student still pends to the removed course.";
-       		return;
-       	}
-       	isCourseTaken(courseID,root->_Right);
-    }
+
 
 
 
