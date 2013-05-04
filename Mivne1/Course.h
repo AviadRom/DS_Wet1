@@ -42,7 +42,7 @@ class Course{
         for (; numOfNewlyEnrolled > 0; numOfNewlyEnrolled--){
             Student studentRestore(tmpHead->Data);
             AVLNode<Student>* restoreNode = StudentsTree->Find(&studentRestore);
-            restoreNode->_Data.removeCourse(&_ID);
+            restoreNode->_Data.RemoveCourse(&_ID);
             restoreNode->_Data.AddCoursePending(&_ID, tmpHead);
             tmpHead = tmpHead->Previous;
         }
