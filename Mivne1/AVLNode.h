@@ -11,10 +11,11 @@
 template <typename T>
 class AVLNode{
 public:
+    T _Data;
     int _Balance;
     int _Height;
     AVLNode *_Left, *_Right, *_Parent;
-    T _Data;
+    
     
     AVLNode<T>(){
         _Balance=0;
