@@ -151,8 +151,11 @@ public:
         return true;
     }
     
-    /*
-     *Description:used to check if student is on course enrolled tree.
+    /* IsEnrolled
+     * Description:used to check if student is on course enrolled tree.
+     * @param StudentID: ID of the student to check.
+     * @return: true if student is enrolled.
+     *          false if not enrolled.
      */
     const bool IsEnrolled(int* StudentID) {
         Student student(*StudentID);
