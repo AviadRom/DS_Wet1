@@ -21,13 +21,18 @@ class Statistics{
     int _NumberOfCourses;
     AVLTree<Student> Students;
     
-    //NOTE THAT I CHANGED "unsignStudent" TO THIS NAME.MUCH MORE READABLE.
+    /*DropAllStudentsFromCourse
+     * Description: In-Order iteration on students tree to remove the course from each student's
+     *              list of courses.
+     * @param CourseID: ID of the course to remove.
+     * @param root: root of the students tree
+     */
     void DropAllStudentsFromCourse(int courseID,AVLNode<Student>* root){ 
            if (root == NULL){
        		return;
        	}
        	DropAllStudentsFromCourse(courseID, root->_Left);
-       	root->_Data.removeCourse(&courseID);
+       	root->_Data.RemoveCourse(&courseID);
        	DropAllStudentsFromCourse(courseID,root->_Right);
     }
     void GetMaxCourseSize(AVLNode<Course>* root,int* maxSize,int* amountOfCourses){
@@ -142,7 +147,7 @@ public:
                 studentNode->_Data.AddCoursePending(&CourseID,courseNode->_Data.GetQueueTail());
             }
         } catch (bad_alloc& BadAlloc){
-            studentNode->_Data.removeCourse(&CourseID);
+            studentNode->_Data.RemoveCourse(&CourseID);
             courseNode->_Data.Leave(&StudentID);
             return ALLOCATION_ERROR;
         }
