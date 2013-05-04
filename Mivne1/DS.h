@@ -36,6 +36,13 @@ class Statistics{
        	DropAllStudentsFromCourse(courseID,root->_Right);
     }
     
+    /*GetMaxCourseSize
+     * Description: Searches within all the courses stored in the current system for
+     *              the course with the maximal size.
+     * @param root: Root of the tree to search.
+     * @param maxSize: Pointer to where the max size will be held.
+     * @param amountOfCourses: //TODO (wasn't sure why this one exists)
+     */
     void GetMaxCourseSize(AVLNode<Course>* root,int* maxSize,int* amountOfCourses){
            if (root == NULL){
        		return;
@@ -48,18 +55,24 @@ class Statistics{
        	GetMaxCourseSize(root->_Right,maxSize,amountOfCourses);
     }
 
-    void GetSubscribedStudents(AVLNode<int>* root,int*** courses,int maxSize,int numOfCourses,int** coursesSize){
+    /*GetEnrolledStudents
+     * Description: Gets The list of each course's enrolled students
+     */ //OHAD- I Don't get the logics of this one. how is it supposed to work?
+    void GetEnrolledStudents(AVLNode<int>* root,int*** courses,int maxSize,int numOfCourses,int** coursesSize){
        	if (root == NULL){
    			return;
    		}
-   		GetSubscribedStudents(root->_Left,courses,maxSize,numOfCourses,coursesSize);
+   		GetEnrolledStudents(root->_Left,courses,maxSize,numOfCourses,coursesSize);
    		++(*coursesSize[numOfCourses]);
    		int currentStudent=*(coursesSize[numOfCourses]);
    		courses[numOfCourses][currentStudent]=(int*)malloc(sizeof(int));
    		*(courses[numOfCourses][currentStudent])=root->_Data;
-   		GetSubscribedStudents(root->_Right,courses,maxSize,numOfCourses,coursesSize);
+   		GetEnrolledStudents(root->_Right,courses,maxSize,numOfCourses,coursesSize);
    	}
        
+    //OHAD- I Wasn't sure about what this one does but looks like there's some wrong
+    // assumptions on memory allocations. this might be a major reason for the seg. fault.
+    //
     void VisitAllCourses(AVLNode<Course>* root,int ***courses, int**coursesSize, int *numOfCourses,int maxSize,int* flag){
            if (root==NULL){
        		return;
@@ -78,7 +91,7 @@ class Statistics{
        	for (int i=1;i<=maxSize;i++){
        		courses[*numOfCourses][i]=NULL;
        	}
-       	GetSubscribedStudents(root->_Data.GetEnrolledStudents(),courses,maxSize,*numOfCourses,coursesSize);
+       	GetEnrolledStudents(root->_Data.GetEnrolledStudents(),courses,maxSize,*numOfCourses,coursesSize);
        	VisitAllCourses(root->_Right,courses,coursesSize,numOfCourses,maxSize,flag);
     }
 
@@ -195,6 +208,7 @@ public:
         return SUCCESS;
     }
 
+//OHAD- Watch my changes over here with the "Blame" tab, I removed all dangerous "free"s and fixed the mallocs.
     StatusType GetAllCourses(int*** courses, int** coursesSize, int* numOfCourses){
             if (courses == NULL || coursesSize == NULL || numOfCourses == NULL  ){
                 return INVALID_INPUT;
@@ -202,33 +216,16 @@ public:
             int maxSize = 0;
             int amountOfCourses = 0;
             GetMaxCourseSize(Courses.GetRoot(),&maxSize,&amountOfCourses);
-            /*numOfCourses = (int*)malloc(sizeof(int));
-            if (numOfCourses == NULL){
-                return ALLOCATION_ERROR;
-            }*/
+//Removed redundant malloc over here that might have caused trouble
             *numOfCourses = _NumberOfCourses;
             *coursesSize = (int*)malloc(amountOfCourses * sizeof(int));
             if (coursesSize == NULL){
-            	//free(numOfCourses);
             	return ALLOCATION_ERROR;
             }
-            /*for (int i = 0; i < amountOfCourses; i++){
-            	coursesSize[i] = (int*)malloc(sizeof(int));
-            	if (coursesSize[i] == NULL){
-            		for (int j = 0; j < i; j++){
-            			free (*coursesSize[i]);
-            		}
-            	//	free(numOfCourses);
-            		free (*coursesSize);
-            		return ALLOCATION_ERROR;
-            	}
-            	*coursesSize[i] = 0;
 
-            }*/
-            bool visitAllCoursesAllocationErrorflag = flase;								//This flag states ALLOCATION ERROR in the function VisitAllCourses.
+            bool visitAllCoursesAllocationErrorflag = false;
             *courses=(int**)malloc(amountOfCourses*sizeof(int*));
             if (courses == NULL){
-            	//free(numOfCourses);
             	free(*coursesSize);
             	return ALLOCATION_ERROR;
             }
@@ -237,7 +234,6 @@ public:
         		for (int j=0;j<*numOfCourses;j++){
         			free((*courses)[j]);
           		}
-        		//free(numOfCourses);
         		free(*coursesSize);
         		return ALLOCATION_ERROR;
         	}
