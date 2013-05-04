@@ -201,6 +201,9 @@ public:
     AVLNode<int>* GetEnrolledStudents(){
         return _EnrolledStudents.GetRoot();
     }
+    int GetCourseId(){
+        return _ID;
+    }
     
 };
 
