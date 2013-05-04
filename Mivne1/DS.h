@@ -35,6 +35,7 @@ class Statistics{
        	root->_Data.RemoveCourse(&courseID);
        	DropAllStudentsFromCourse(courseID,root->_Right);
     }
+    
     void GetMaxCourseSize(AVLNode<Course>* root,int* maxSize,int* amountOfCourses){
            if (root == NULL){
        		return;
@@ -58,6 +59,7 @@ class Statistics{
    		*(courses[numOfCourses][currentStudent])=root->_Data;
    		GetSubscribedStudents(root->_Right,courses,maxSize,numOfCourses,coursesSize);
    	}
+       
     void VisitAllCourses(AVLNode<Course>* root,int ***courses, int**coursesSize, int *numOfCourses,int maxSize,int* flag){
            if (root==NULL){
        		return;
@@ -103,6 +105,7 @@ public:
         } catch (bad_alloc& BadAlloc){
             return ALLOCATION_ERROR;
         }
+        _NumberOfCourses++;
     	return SUCCESS;
     }
 
@@ -113,6 +116,7 @@ public:
        	}
        	Courses.Remove(&course);
        	DropAllStudentsFromCourse(CourseID,Students.GetRoot());
+        _NumberOfCourses--;
        	return SUCCESS;
     }
 
@@ -192,37 +196,37 @@ public:
     }
 
     StatusType GetAllCourses(int*** courses, int** coursesSize, int* numOfCourses){
-            if (courses==NULL || coursesSize==NULL || numOfCourses==NULL  ){
+            if (courses == NULL || coursesSize == NULL || numOfCourses == NULL  ){
                 return INVALID_INPUT;
             }
-            int maxSize=0;
-            int amountOfCourses=0;
+            int maxSize = 0;
+            int amountOfCourses = 0;
             GetMaxCourseSize(Courses.GetRoot(),&maxSize,&amountOfCourses);
-            numOfCourses=(int*)malloc(sizeof(int));
+            /*numOfCourses = (int*)malloc(sizeof(int));
             if (numOfCourses == NULL){
                 return ALLOCATION_ERROR;
-            }
-            *numOfCourses=-1;
-            coursesSize=(int**)malloc(amountOfCourses*sizeof(int*));
+            }*/
+            *numOfCourses = _NumberOfCourses;
+            *coursesSize = (int*)malloc(amountOfCourses * sizeof(int));
             if (coursesSize == NULL){
-            	free(numOfCourses);
+            	//free(numOfCourses);
             	return ALLOCATION_ERROR;
             }
-            for (int i=0;i<amountOfCourses;i++){
-            	coursesSize[i]=(int*)malloc(sizeof(int));
-            	if (coursesSize[i]==NULL){
-            		for (int j=0;j<i;j++){
+            for (int i = 0; i < amountOfCourses; i++){
+            	coursesSize[i] = (int*)malloc(sizeof(int));
+            	if (coursesSize[i] == NULL){
+            		for (int j = 0; j < i; j++){
             			free (coursesSize[i]);
             		}
-            		free(numOfCourses);
+            	//	free(numOfCourses);
             		free (coursesSize);
             		return ALLOCATION_ERROR;
             	}
-            	*coursesSize[i]=0;
+            	*coursesSize[i] = 0;
 
             }
             int flag=0;								//This flag states ALLOCATION ERROR in the function VisitAllCourses.
-            courses=(int***)malloc(amountOfCourses*sizeof(int**));
+            *courses=(int**)malloc(amountOfCourses*sizeof(int*));
             if (courses == NULL){
             	free(numOfCourses);
             	free(coursesSize);
