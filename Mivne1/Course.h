@@ -128,7 +128,14 @@ public:
         return false;
     }
     
-    const bool Leave(int* StudentID){ //Removal from pending list is done via DS, by the student object.
+    /*Leave
+     * Description: removes a student from the course enrolled list and adds a pending 
+     *              student if exists instead.
+     * @param StudentID: pointer to ID of the student to be removed.
+     * @return: true if student was removed successfully.
+     *          false if invalid pointer was provided.
+     */
+    const bool Leave(int* StudentID){ 
         if (!StudentID){
             return false;
         }
@@ -144,14 +151,16 @@ public:
         return true;
     }
     
-    //used to check if student is either on course enrolled tree or pending tree.
+    /*
+     *Description:used to check if student is on course enrolled tree.
+     */
     const bool IsEnrolled(int* StudentID) {
         Student student(*StudentID);
         if (_EnrolledStudents.IsIn(StudentID)){ // || _PendingStudents.IsIn(&student)){
             return true;
         }
             return false;
-    } // Maybe not relevant anymore
+    } 
     
     const bool operator<(Course& Comperator) const{
         return (_ID < Comperator.GetID());
@@ -165,9 +174,17 @@ public:
         return (_ID == Comperator.GetID());
     }
 
+    /*GetQueueTail
+     * Description: Returns a pointer to the tail of the pending queue
+     */
     LListNode<int>* GetQueueTail(){
         return _PendingTail;
     }
+    
+    /* GetEnrolledStudents
+     * Description: Returns a pointer to the root node of the enrolled students tree
+     *              of the course.
+     */
     AVLNode<int>* GetEnrolledStudents(){
         return _EnrolledStudents.GetRoot();
     }
