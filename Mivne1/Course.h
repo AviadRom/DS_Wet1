@@ -159,7 +159,7 @@ public:
      */
     const bool IsEnrolled(int* StudentID) {
         Student student(*StudentID);
-        if (_EnrolledStudents.IsIn(StudentID)){ // || _PendingStudents.IsIn(&student)){
+        if (_EnrolledStudents.IsIn(StudentID)){ 
             return true;
         }
             return false;
