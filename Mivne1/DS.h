@@ -135,7 +135,6 @@ public:
         if (!studentNode || !courseNode || courseNode->_Data.IsEnrolled(&StudentID)){
             return FAILURE;
         }
-//TODO check if student is pending for course
         try{
             if (courseNode->_Data.Enroll(&StudentID)){
                 studentNode->_Data.AddCourseTaken(&CourseID);
