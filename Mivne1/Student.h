@@ -81,6 +81,13 @@ public:
     const int GetNumberOfCoursesTaken() const{
         return _NumberOfCoursesTaken;
     }
+    bool IsCourseTaken(int courseId){
+        return _CoursesTaken.IsIn(&courseId);
+    }
+    bool IsCoursePending(int courseId){
+        PendCourse course(courseId);
+    	return _CoursesPending.IsIn(&course);
+    }
 };
 
 #endif
