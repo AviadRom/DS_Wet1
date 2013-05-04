@@ -22,6 +22,10 @@ class Course{
     LListNode<int>* _PendingHead; //where we pull students from
     LListNode<int>* _PendingTail; //where we push students to
     
+    /*AddToPend
+     * Description: Adds a student to the pending list.
+     * @param studentID: ID of the student to pend.
+     */
     void AddToPend (int studentID){
         LListNode<int>* node = new LListNode<int>(studentID);
         if (_PendingTail == NULL && _PendingHead == NULL){
@@ -34,6 +38,12 @@ class Course{
         }
     }
     
+    /*RestoreLastState
+     * Description: Restores the last state of the course in case of a failure in IncreaseSize.
+     * @param numOfNewlyEnrolled: Number of newly enrolled students in the course.
+     * @param tmpHead: pointer to the temporary head of pending list.
+     * @param needToUpdateCurrent: flag to tell tmpHead needs to be updated or not.
+     */
     void RestoreLastState(int& numOfNewlyEnrolled, LListNode<int>* tmpHead, bool needToUpdateCurrent,
                                 AVLTree<Student>* StudentsTree){
         if (!needToUpdateCurrent){
