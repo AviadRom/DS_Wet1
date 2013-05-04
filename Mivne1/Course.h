@@ -18,11 +18,11 @@ class Course{
     int _Size;
     int _AvailableSeats;
     int _NumOfPending;
-    AVLTree<int> _EnrolledStudents; //switched to int-doesn't need any extra info in here.
+    AVLTree<int> _EnrolledStudents;
     LListNode<int>* _PendingHead; //where we pull students from
     LListNode<int>* _PendingTail; //where we push students to
     
-    void AddToPend (int studentID){ //only use this to
+    void AddToPend (int studentID){
         LListNode<int>* node = new LListNode<int>(studentID);
         if (_PendingTail == NULL && _PendingHead == NULL){
             _PendingHead = node;
@@ -54,14 +54,27 @@ public:
                             _PendingTail(NULL){}
     ~Course(){}
     
+    /*GetID
+     * Description: Getter to _ID property of the class
+     */
     int GetID(){
         return _ID;
     }
     
+    /*GetSize
+     * Description: Getter to _Size property of the class
+     */
     int GetSize(){
         return _Size;
     }
     
+    /*IncreaseSize
+     * Description: Increases the size of the course according to provided addition,
+     *              and if there are pending students- they move to the enrolled list accordingly
+     * @param Addition: Extra size addition to the course.
+     * @param StudentsTree: Pointer to where the students tree is located, used to update students' data
+     *                      about the course as well.
+     */
     void IncreaseSize(int Addition, AVLTree<Student>* StudentsTree){
         _Size += Addition;
         _AvailableSeats += Addition;
@@ -96,6 +109,13 @@ public:
         }
     }
 
+    /*Enroll
+     * Description: Adds a student to either enrolled students or pending students
+     *              based on available seats.
+     * @param StudentID: ID of the student to enroll to the course.
+     * @return: true if student was added to the enrolled students tree.
+     *          false if invalid input was provided or if student was added to pending list.
+     */
     const bool Enroll(int* StudentID){
         if (StudentID){
             if (_AvailableSeats){
