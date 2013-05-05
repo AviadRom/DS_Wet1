@@ -30,6 +30,13 @@ public:
     const int GetID(){
         return _CourseID;
     }
+    
+    void Remove(){
+        if (_QueueNode->Previous && _QueueNode->Next)
+        _QueueNode->Previous->Next = _QueueNode->Next;
+        _QueueNode->Next->Previous = _QueueNode->Previous;
+        delete _QueueNode;
+    }
 };
 
 
