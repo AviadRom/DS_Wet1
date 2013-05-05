@@ -171,6 +171,12 @@ public:
         } catch (bad_alloc& BadAlloc){
             return ALLOCATION_ERROR;
         }
+        try {
+            StudentNode->_Data.RemoveCourse(&CourseID);
+        } catch (bad_alloc& BadAlloc){
+            courseNode->_Data.Enroll(&StudentID);
+            return ALLOCATION_ERROR;
+        }
         return SUCCESS;
     }
     
