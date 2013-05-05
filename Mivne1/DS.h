@@ -131,6 +131,7 @@ public:
         if (studentNode->_Data.GetNumberOfCoursesTaken()){
             return FAILURE;
         }
+        studentNode->_Data.RemoveAllPending();
         return SUCCESS;
     }
     
