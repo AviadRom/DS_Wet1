@@ -122,6 +122,16 @@ public:
         PendCourse course(courseID);
     	return _CoursesPending.IsIn(&course);
     }
+    
+    /*RemoveAllPending
+     * Description: Removes all the pending courses from the tree.
+     */
+    void RemoveAllPending(){
+        while (!_CoursesPending.IsEmpty()){
+            AVLNode<PendCourse>* tmp=_CoursesPending.GetRoot();
+            _CoursesPending.Remove(&(tmp->Data));
+        }
+    }
 };
 
 #endif
