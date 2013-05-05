@@ -6,7 +6,7 @@
 //  Copyright (c) 2013 Aviad Rom. All rights reserved.
 //
 
-#ifndef Mivne1_DS_h
+
 #define Mivne1_DS_h
 #include "library1.h"
 #include "AVLTree.h"
@@ -29,20 +29,12 @@ class Statistics{
      */
     void DropAllStudentsFromCourse(int courseID,AVLNode<Student>* root){ 
            if (root == NULL){
-       		return;
+           	return;
        	}
        	DropAllStudentsFromCourse(courseID, root->_Left);
        	root->_Data.RemoveCourse(&courseID);
        	DropAllStudentsFromCourse(courseID,root->_Right);
     }
-    
-    /*GetMaxCourseSize
-     * Description: Searches within all the courses stored in the current system for
-     *              the course with the maximal size.
-     * @param root: Root of the tree to search.
-     * @param maxSize: Pointer to where the max size will be held.
-     * @param amountOfCourses: //TODO (wasn't sure why this one exists)
-     */
     void GetMaxCourseSize(AVLNode<Course>* root,int* maxSize,int* amountOfCourses){
            if (root == NULL){
        		return;
@@ -55,43 +47,31 @@ class Statistics{
        	GetMaxCourseSize(root->_Right,maxSize,amountOfCourses);
     }
 
-    /*GetEnrolledStudents
-     * Description: Gets The list of each course's enrolled students
-     */ //OHAD- I Don't get the logics of this one. how is it supposed to work?
-    void GetEnrolledStudents(AVLNode<int>* root,int*** courses,int maxSize,int numOfCourses,int** coursesSize){
+    void GetSubscribedStudents(AVLNode<int>* root,int** courses,int maxSize,int* numOfCourses,int* coursesSize){
        	if (root == NULL){
    			return;
    		}
-   		GetEnrolledStudents(root->_Left,courses,maxSize,numOfCourses,coursesSize);
-   		++(*coursesSize[numOfCourses]);
-   		int currentStudent=*(coursesSize[numOfCourses]);
-   		courses[numOfCourses][currentStudent]=(int*)malloc(sizeof(int));
-   		*(courses[numOfCourses][currentStudent])=root->_Data;
-   		GetEnrolledStudents(root->_Right,courses,maxSize,numOfCourses,coursesSize);
+   		GetSubscribedStudents(root->_Left,courses,maxSize,numOfCourses,coursesSize);
+   		++(coursesSize[*numOfCourses]);
+   		int currentStudent=coursesSize[*numOfCourses];
+   		courses[*numOfCourses][currentStudent]=root->_Data;
+   		GetSubscribedStudents(root->_Right,courses,maxSize,numOfCourses,coursesSize);
    	}
-       
-    //OHAD- I Wasn't sure about what this one does but looks like there's some wrong
-    // assumptions on memory allocations. this might be a major reason for the seg. fault.
-    //
-    void VisitAllCourses(AVLNode<Course>* root,int ***courses, int**coursesSize, int *numOfCourses,int maxSize,int* flag){
+    void VisitAllCourses(AVLNode<Course>* root,int **courses, int* coursesSize, int* numOfCourses,int maxSize,int* flag){
            if (root==NULL){
        		return;
        	}
        	VisitAllCourses(root->_Left,courses,coursesSize,numOfCourses,maxSize,flag);
       	(*numOfCourses)++;
-       	courses[*numOfCourses]=(int**)malloc((maxSize+1)*sizeof(int*));
+       	courses[*numOfCourses]=(int*)malloc((maxSize+1)*sizeof(int));
        	if (courses[*numOfCourses] == NULL){
        		*flag=1;
      	}
-       	courses[*numOfCourses][0]=(int*)malloc(sizeof(int));
-       	if (courses[*numOfCourses][0] == NULL){
-       		*flag=1;
-       	}
-       	*courses[*numOfCourses][0]=root->_Data.GetCourseId();
+       	courses[*numOfCourses][0]=root->_Data.GetCourseId();
        	for (int i=1;i<=maxSize;i++){
-       		courses[*numOfCourses][i]=NULL;
+       		courses[*numOfCourses][i]=0;
        	}
-       	GetEnrolledStudents(root->_Data.GetEnrolledStudents(),courses,maxSize,*numOfCourses,coursesSize);
+       	GetSubscribedStudents(root->_Data.GetEnrolledStudents(),courses,maxSize,numOfCourses,coursesSize);
        	VisitAllCourses(root->_Right,courses,coursesSize,numOfCourses,maxSize,flag);
     }
 
@@ -118,7 +98,6 @@ public:
         } catch (bad_alloc& BadAlloc){
             return ALLOCATION_ERROR;
         }
-        _NumberOfCourses++;
     	return SUCCESS;
     }
 
@@ -129,7 +108,6 @@ public:
        	}
        	Courses.Remove(&course);
        	DropAllStudentsFromCourse(CourseID,Students.GetRoot());
-        _NumberOfCourses--;
        	return SUCCESS;
     }
 
@@ -208,38 +186,36 @@ public:
         return SUCCESS;
     }
 
-//OHAD- Watch my changes over here with the "Blame" tab, I removed all dangerous "free"s and fixed the mallocs.
     StatusType GetAllCourses(int*** courses, int** coursesSize, int* numOfCourses){
-            if (courses == NULL || coursesSize == NULL || numOfCourses == NULL  ){
+            if (courses==NULL || coursesSize==NULL || numOfCourses==NULL  ){
                 return INVALID_INPUT;
             }
-            int maxSize = 0;
-            int amountOfCourses = 0;
+            int maxSize=0;
+            int amountOfCourses=0;
             GetMaxCourseSize(Courses.GetRoot(),&maxSize,&amountOfCourses);
-//Removed redundant malloc over here that might have caused trouble
-            *numOfCourses = _NumberOfCourses;
-            *coursesSize = (int*)malloc(amountOfCourses * sizeof(int));
-            if (coursesSize == NULL){
-            	return ALLOCATION_ERROR;
+            *numOfCourses=-1;
+            *coursesSize=(int*)malloc(amountOfCourses*sizeof(int));
+            if (*coursesSize == NULL){
+              	return ALLOCATION_ERROR;
             }
-
-            bool visitAllCoursesAllocationErrorflag = false;
+            for (int i=0;i<amountOfCourses;i++){
+            	(*coursesSize)[i]=0;
+            }
+           int flag=0;
             *courses=(int**)malloc(amountOfCourses*sizeof(int*));
-            if (courses == NULL){
+            if (*courses == NULL){
             	free(*coursesSize);
             	return ALLOCATION_ERROR;
             }
-            VisitAllCourses(Courses.GetRoot(),courses,coursesSize,numOfCourses,maxSize,&flag);
+            VisitAllCourses(Courses.GetRoot(),*courses,*coursesSize,numOfCourses,maxSize,&flag);
         	if (flag){
         		for (int j=0;j<*numOfCourses;j++){
         			free((*courses)[j]);
           		}
-        		free(*coursesSize);
+        		free(numOfCourses);
+        		free(coursesSize);
         		return ALLOCATION_ERROR;
         	}
             return SUCCESS;
         }
-};
-
-
-#endif
+    };
