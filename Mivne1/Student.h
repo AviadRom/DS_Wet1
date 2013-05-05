@@ -128,8 +128,9 @@ public:
      */
     void RemoveAllPending(){
         while (!_CoursesPending.IsEmpty()){
-            AVLNode<PendCourse>* tmp=_CoursesPending.GetRoot();
-            _CoursesPending.Remove(&(tmp->Data));
+            AVLNode<PendCourse>* tmp = _CoursesPending.GetRoot();
+            tmp->_Data.Remove();
+            _CoursesPending.Remove(&(tmp->_Data));
         }
     }
 };
