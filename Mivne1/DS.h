@@ -132,6 +132,7 @@ public:
             return FAILURE;
         }
         studentNode->_Data.RemoveAllPending();
+        _Students.Remove(&student);
         return SUCCESS;
     }
     
