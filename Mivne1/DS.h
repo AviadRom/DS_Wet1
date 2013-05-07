@@ -47,32 +47,44 @@ class Statistics{
        	GetMaxCourseSize(root->_Right,maxSize,amountOfCourses);
     }
 
-    void GetSubscribedStudents(AVLNode<int>* root,int** courses,int maxSize,int* numOfCourses,int* coursesSize){
+    void GetEnrolledStudents(AVLNode<int>* root,int** courses,int maxSize,int* numOfCourses,int* coursesSize){
        	if (root == NULL){
    			return;
    		}
-   		GetSubscribedStudents(root->_Left,courses,maxSize,numOfCourses,coursesSize);
+   		GetEnrolledStudents(root->_Left,courses,maxSize,numOfCourses,coursesSize);
    		++(coursesSize[*numOfCourses]);
+   		//currentStudent++;
    		int currentStudent=coursesSize[*numOfCourses];
    		courses[*numOfCourses][currentStudent]=root->_Data;
-   		GetSubscribedStudents(root->_Right,courses,maxSize,numOfCourses,coursesSize);
+   		GetEnrolledStudents(root->_Right,courses,maxSize,numOfCourses,coursesSize);
    	}
-    void VisitAllCourses(AVLNode<Course>* root,int **courses, int* coursesSize, int* numOfCourses,int maxSize,int* flag){
+    void GetCourseId(AVLNode<Course>* root,int **courses, int* coursesSize, int* numOfCourses,int maxSize,bool* allocationErrorFlag){
            if (root==NULL){
        		return;
        	}
-       	VisitAllCourses(root->_Left,courses,coursesSize,numOfCourses,maxSize,flag);
+       	GetCourseId(root->_Left,courses,coursesSize,numOfCourses,maxSize,allocationErrorFlag);
       	(*numOfCourses)++;
+      	//coursesSize[*numOfCourses]=root->_Data.GetActualSize();
        	courses[*numOfCourses]=(int*)malloc((maxSize+1)*sizeof(int));
        	if (courses[*numOfCourses] == NULL){
-       		*flag=1;
+       		*allocationErrorFlag=true;
      	}
        	courses[*numOfCourses][0]=root->_Data.GetCourseId();
        	for (int i=1;i<=maxSize;i++){
        		courses[*numOfCourses][i]=0;
        	}
-       	GetSubscribedStudents(root->_Data.GetEnrolledStudents(),courses,maxSize,numOfCourses,coursesSize);
-       	VisitAllCourses(root->_Right,courses,coursesSize,numOfCourses,maxSize,flag);
+       	GetEnrolledStudents(root->_Data.GetEnrolledStudents(),courses,maxSize,numOfCourses,coursesSize);
+       	coursesSize[*numOfCourses]=root->_Data.GetActualSize();
+       	GetCourseId(root->_Right,courses,coursesSize,numOfCourses,maxSize,allocationErrorFlag);
+    }
+    void RemoveStudentFromPending(AVLNode<PendCourse>* root,AVLNode<Student>* student){
+       	if (root == NULL){
+       		return;
+       	}
+    	RemoveStudentFromPending(root->_Left,student);
+       	int currentCourse=root->_Data.GetID();
+       	student->_Data.RemoveCourse(&currentCourse);
+       	RemoveStudentFromPending(root->_Right,student);
     }
 
 public:
@@ -131,8 +143,8 @@ public:
         if (studentNode->_Data.GetNumberOfCoursesTaken()){
             return FAILURE;
         }
-        studentNode->_Data.RemoveAllPending();
-        _Students.Remove(&student);
+        RemoveStudentFromPending(studentNode->_Data.GetCoursesPending(),studentNode);
+        Students.Remove(&studentNode->_Data);
         return SUCCESS;
     }
     
@@ -171,12 +183,6 @@ public:
         } catch (bad_alloc& BadAlloc){
             return ALLOCATION_ERROR;
         }
-        try {
-            StudentNode->_Data.RemoveCourse(&CourseID);
-        } catch (bad_alloc& BadAlloc){
-            courseNode->_Data.Enroll(&StudentID);
-            return ALLOCATION_ERROR;
-        }
         return SUCCESS;
     }
     
@@ -209,14 +215,14 @@ public:
             for (int i=0;i<amountOfCourses;i++){
             	(*coursesSize)[i]=0;
             }
-           int flag=0;
+           bool alloctionErrorFlag=false;
             *courses=(int**)malloc(amountOfCourses*sizeof(int*));
             if (*courses == NULL){
             	free(*coursesSize);
             	return ALLOCATION_ERROR;
             }
-            VisitAllCourses(Courses.GetRoot(),*courses,*coursesSize,numOfCourses,maxSize,&flag);
-        	if (flag){
+            GetCourseId(Courses.GetRoot(),*courses,*coursesSize,numOfCourses,maxSize,&alloctionErrorFlag);
+        	if (alloctionErrorFlag){
         		for (int j=0;j<*numOfCourses;j++){
         			free((*courses)[j]);
           		}
@@ -224,6 +230,8 @@ public:
         		free(coursesSize);
         		return ALLOCATION_ERROR;
         	}
-            return SUCCESS;
+            *numOfCourses=amountOfCourses;
+
+        	return SUCCESS;
         }
     };
