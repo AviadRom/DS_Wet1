@@ -20,10 +20,18 @@ class Student {
 public:
     Student():_ID(-1),_NumberOfCoursesTaken(0){}
     
-    Student(int ID):_ID(ID){}
+    Student(int ID):_ID(ID),_NumberOfCoursesTaken(0){}
     
     ~Student(){}
     
+    /* GetEnrolledStudents
+    * Description: Returns a pointer to the root node of the courses pending tree
+    *              of the student.
+    */
+    AVLNode<PendCourse>* GetCoursesPending(){
+        return _CoursesPending.GetRoot();
+    }
+
     /*GetID
      * Description: Getter to _ID property of the student
      */
@@ -121,17 +129,6 @@ public:
     const bool IsCoursePending(int courseID){
         PendCourse course(courseID);
     	return _CoursesPending.IsIn(&course);
-    }
-    
-    /*RemoveAllPending
-     * Description: Removes all the pending courses from the tree.
-     */
-    void RemoveAllPending(){
-        while (!_CoursesPending.IsEmpty()){
-            AVLNode<PendCourse>* tmp = _CoursesPending.GetRoot();
-            tmp->_Data.Remove();
-            _CoursesPending.Remove(&(tmp->_Data));
-        }
     }
 };
 
