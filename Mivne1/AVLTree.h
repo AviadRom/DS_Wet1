@@ -210,7 +210,7 @@ public:
         AVLNode<T>* tmp = Find(Data);
         AVLNode<T>* parent = tmp->_Parent;
         AVLNode<T>* start=parent;
-        if (tmp->_Height == 0){    							//a leaf
+        if (tmp->_Height == 0){        						//a leaf
             if (parent){
                 if ( parent->_Left->_Data == tmp->_Data){
                     delete tmp;
@@ -235,6 +235,7 @@ public:
             }
             else{
             	Root=tmp->_Left;
+            	Root->_Parent=NULL;
             	delete tmp;
             }
         } else if (tmp->_Right && tmp->_Left==NULL){	//only right son
@@ -244,11 +245,13 @@ public:
             		delete tmp;
             	} else if (parent->_Right == tmp){
             		parent->_Right = tmp->_Right;
+            		parent->_Right->_Parent=parent;////////////////////////////////////////////////////////////////////////////////
             		delete tmp;
             	}
             }
             else{
             	Root=tmp->_Right;
+            	Root->_Parent=NULL;
             	delete tmp;
             }
 
@@ -411,10 +414,10 @@ public:
         AVLNode<T>* child = Node->_Left;
         AVLNode<T>* grandChild = child->_Right;
         AVLNode<T>* parent = Node->_Parent;
-        child->_Right = grandChild->_Left;
+        child->_Right = grandChild->_Left;	//step left
         grandChild->_Left = child;
         child->_Parent = grandChild;
-        Node->_Left = grandChild->_Right;
+        Node->_Left = grandChild->_Right;	//Step right
         grandChild->_Right = Node;
         Node->_Parent = grandChild;
         grandChild->_Parent = parent;
